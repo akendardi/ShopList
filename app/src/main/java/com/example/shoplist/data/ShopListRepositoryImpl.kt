@@ -34,10 +34,10 @@ object ShopListRepositoryImpl : ShopListRepository {
     }
 
     override fun getShoppingList(): List<ShopItem> {
-        return shopList.toList()
+        return shopList.toList();
     }
 
     override fun removeShopItem(shopItem: ShopItem) {
-        shopList.remove(shopItem)
+        shopList.remove(shopItem);
     }
 }
