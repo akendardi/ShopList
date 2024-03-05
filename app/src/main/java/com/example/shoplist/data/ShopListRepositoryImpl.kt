@@ -38,6 +38,6 @@ object ShopListRepositoryImpl : ShopListRepository {
     }
 
     override fun removeShopItem(shopItem: ShopItem) {
-        shopList.remove(shopItem)
+        shopList.remove(shopItem);
     }
 }
