@@ -15,7 +15,7 @@ object ShopListRepositoryImpl : ShopListRepository {
     init {
         for (i in 0 until 10){
             val item = ShopItem("Name $i", i, true)
-            shopList.add(item)
+            addShopItem(item)
         }
         updateLiveData()
     }
@@ -31,7 +31,6 @@ object ShopListRepositoryImpl : ShopListRepository {
         val oldElement = getShopItem(shopItem.id)
         shopList.remove(oldElement)
         addShopItem(shopItem)
-        updateLiveData()
     }
 
     override fun getShopItem(id: Int): ShopItem {
@@ -48,6 +47,7 @@ object ShopListRepositoryImpl : ShopListRepository {
         updateLiveData()
     }
 
+    //Обновление LiveData
     private fun updateLiveData(){
         shopListLD.value = shopList.toList()
     }
