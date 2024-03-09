@@ -11,7 +11,8 @@ import com.example.shoplist.domain.ShopItem
 
 class ShopListAdapter : RecyclerView.Adapter<ShopListAdapter.ShopItemViewHolder>() {
 
-    var count = 0
+    var onShopItemLongClickListener: ((ShopItem) -> Unit)? = null
+    var onShopItemClickListener: ((ShopItem) -> Unit)? = null
     companion object{
          val ENABLED_RES = R.layout.shop_item_enabled
          val DISABLED_RES = R.layout.shop_item_disabled
@@ -30,13 +31,19 @@ class ShopListAdapter : RecyclerView.Adapter<ShopListAdapter.ShopItemViewHolder>
         parent: ViewGroup,
         viewType: Int
     ): ShopItemViewHolder {
-        Log.d("onCreateViewHolder", "${++count}")
         val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
         return ShopItemViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: ShopItemViewHolder, position: Int) {
         val item = shopList[position]
+        holder.itemView.setOnLongClickListener{
+            onShopItemLongClickListener?.invoke(item)
+            true
+        }
+        holder.itemView.setOnClickListener{
+            onShopItemClickListener?.invoke(item)
+        }
         holder.tvName.text = item.name
         holder.tvCount.text = item.count.toString()
     }
@@ -56,5 +63,13 @@ class ShopListAdapter : RecyclerView.Adapter<ShopListAdapter.ShopItemViewHolder>
     class ShopItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val tvName = view.findViewById<TextView>(R.id.tv_name)
         val tvCount = view.findViewById<TextView>(R.id.tv_count)
+    }
+
+    interface OnShopItemLongClickListener{
+        fun onShopItemLongClick(shopItem: ShopItem)
+    }
+
+    interface OnShopItemClickListener{
+        fun onShopItemClick(shopItem: ShopItem)
     }
 }
