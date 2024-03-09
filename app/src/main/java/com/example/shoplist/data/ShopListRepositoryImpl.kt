@@ -5,6 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import com.example.shoplist.domain.ShopItem
 import com.example.shoplist.domain.ShopListRepository
 import java.lang.RuntimeException
+import java.util.Random
+
 /*это сингл тон базы данных. здесь есть все методы из интерфейса*/
 object ShopListRepositoryImpl : ShopListRepository {
 
@@ -13,8 +15,8 @@ object ShopListRepositoryImpl : ShopListRepository {
     private var autoIncrementId = 0
 
     init {
-        for (i in 0 until 10){
-            val item = ShopItem("Name $i", i, true)
+        for (i in 0 until 100){
+            val item = ShopItem("Name $i", i, kotlin.random.Random.nextBoolean())
             addShopItem(item)
         }
         updateLiveData()
