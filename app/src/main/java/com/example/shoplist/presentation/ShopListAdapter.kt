@@ -1,5 +1,6 @@
 package com.example.shoplist.presentation
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +10,15 @@ import com.example.shoplist.R
 import com.example.shoplist.domain.ShopItem
 
 class ShopListAdapter : RecyclerView.Adapter<ShopListAdapter.ShopItemViewHolder>() {
+
+    var count = 0
+    companion object{
+         val ENABLED_RES = R.layout.shop_item_enabled
+         val DISABLED_RES = R.layout.shop_item_disabled
+
+        const val MAX_POOL_SIZE = 10
+    }
+
 
     var shopList = listOf<ShopItem>()
         set(value) {
@@ -20,12 +30,8 @@ class ShopListAdapter : RecyclerView.Adapter<ShopListAdapter.ShopItemViewHolder>
         parent: ViewGroup,
         viewType: Int
     ): ShopItemViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(
-                R.layout.shop_item_enabled,
-                parent,
-                false
-            )
+        Log.d("onCreateViewHolder", "${++count}")
+        val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
         return ShopItemViewHolder(view)
     }
 
@@ -37,6 +43,14 @@ class ShopListAdapter : RecyclerView.Adapter<ShopListAdapter.ShopItemViewHolder>
 
     override fun getItemCount(): Int {
         return shopList.size
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return if (shopList[position].enabled){
+            ENABLED_RES
+        } else{
+            DISABLED_RES
+        }
     }
 
     class ShopItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {
