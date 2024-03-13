@@ -69,6 +69,7 @@ class MainActivity : AppCompatActivity() {
         itemTouchHelper.attachToRecyclerView(rvShopList)
     }
 
+    //Переопределение методов из адаптера
     private fun setupClickListener() {
         adapter.onShopItemClickListener = {
             Log.d("onShopItemClickListener", it.toString())
