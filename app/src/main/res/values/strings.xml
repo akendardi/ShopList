@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">ShopList</string>
     <string name="add_new_shopitem">Add new shopItem</string>
+    <string name="product">Продукт</string>
 </resources>
