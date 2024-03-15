@@ -1,5 +1,7 @@
 package com.example.shoplist.presentation
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.shoplist.data.ShopListRepositoryImpl
 import com.example.shoplist.domain.AddShopItemUseCase
@@ -14,9 +16,26 @@ class ShopItemViewModel : ViewModel() {
     val editShopItemUseCase = EditShopItemUseCase(repository)
     val getShopItemUseCase = GetShopItemFromIdUseCase(repository)
 
+    private val _errorInputName = MutableLiveData<Boolean>()
+    val errorInputName: LiveData<Boolean>
+        get() = _errorInputName
+
+
+    private val _errorInputCount = MutableLiveData<Boolean>()
+    val errorInputCount: LiveData<Boolean>
+        get() = _errorInputCount
+
+    private val _shopItem = MutableLiveData<ShopItem>()
+    val shopItem: LiveData<ShopItem>
+        get() = _shopItem
+
+    private val _canCloseScreen = MutableLiveData<Unit>()
+    val canCloseScreen: LiveData<Unit>
+        get() = _canCloseScreen
 
     fun getShopItem(id: Int) {
         val item = getShopItemUseCase.getShopItem(id)
+        _shopItem.value = item
     }
 
     fun addShopItem(inputName: String?, inputCount: String?) {
@@ -26,6 +45,7 @@ class ShopItemViewModel : ViewModel() {
         if (validInput) {
             val shopItem = ShopItem(name, count, true)
             addShopItemUseCase.addShopItem(shopItem)
+            finishWork()
         }
     }
 
@@ -34,8 +54,12 @@ class ShopItemViewModel : ViewModel() {
         val count = parseCount(inputCount)
         val validInput = validateInput(name, count)
         if (validInput) {
-            val shopItem = ShopItem(name, count, true)
-            editShopItemUseCase.editShopItem(shopItem)
+            _shopItem.value?.let {
+                val shopItem = it.copy(name = name, count = count)
+                editShopItemUseCase.editShopItem(shopItem)
+                finishWork()
+            }
+
         }
     }
 
@@ -51,16 +75,28 @@ class ShopItemViewModel : ViewModel() {
         }
     }
 
-    private fun validateInput(name: String, count: Int): Boolean{
+    private fun validateInput(name: String, count: Int): Boolean {
         var result = true
-        if (name.isBlank()){
-            //TODO show name error
+        if (name.isBlank()) {
+            _errorInputName.value = true
             result = false
         }
-        if (count <= 0){
-            //TODO show count error
+        if (count <= 0) {
+            _errorInputCount.value = true
             result = false
         }
         return result
+    }
+
+    public fun resetErrorInputName() {
+        _errorInputName.value = false
+    }
+
+    public fun resetErrorInputCount() {
+        _errorInputCount.value = false
+    }
+
+    private fun finishWork(){
+        _canCloseScreen.value = Unit
     }
 }
