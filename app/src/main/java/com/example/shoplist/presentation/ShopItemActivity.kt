@@ -3,6 +3,8 @@ package com.example.shoplist.presentation
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.WindowManager
 import android.widget.Button
 import android.widget.EditText
@@ -32,6 +34,61 @@ class ShopItemActivity : AppCompatActivity() {
         parseIntent()
         initViews()
         shopItemViewModel = ViewModelProvider(this)[ShopItemViewModel::class.java]
+
+        et_name.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                shopItemViewModel.resetErrorInputName()
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+
+            }
+        })
+
+        et_count.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                shopItemViewModel.resetErrorInputCount()
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+
+            }
+        })
+        when (extraMode){
+            EXTRA_MODE_ADD_ITEM -> launchAddMode()
+            EXTRA_MODE_EDIT_ITEM -> launchEditMode()
+        }
+
+        shopItemViewModel.canCloseScreen.observe(this){
+            finish()
+        }
+
+        shopItemViewModel.errorInputName.observe(this){
+            val message = if (it) {
+                getString(R.string.input_correct)
+            } else {
+                null
+            }
+            til_name.error = message
+        }
+
+        shopItemViewModel.errorInputCount.observe(this){
+            val message = if (it) {
+                getString(R.string.input_correct)
+            } else {
+                null
+            }
+            til_count.error = message
+        }
+
     }
 
     companion object {
@@ -84,7 +141,21 @@ class ShopItemActivity : AppCompatActivity() {
         }
     }
 
-    private fun observers(){
-        //TODO observers
+
+    private fun launchEditMode(){
+        shopItemViewModel.getShopItem(id)
+        shopItemViewModel.shopItem.observe(this){
+            et_name.setText(it.name)
+            et_count.setText(it.count.toString())
+            button_save.setOnClickListener{
+                shopItemViewModel.editShopItem(et_name.text?.toString(), et_count.text?.toString())
+            }
+        }
+    }
+
+    private fun launchAddMode(){
+        button_save.setOnClickListener{
+            shopItemViewModel.addShopItem(et_name.text?.toString(), et_count.text?.toString())
+        }
     }
 }
