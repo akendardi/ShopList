@@ -8,7 +8,6 @@ import com.example.shoplist.domain.AddShopItemUseCase
 import com.example.shoplist.domain.EditShopItemUseCase
 import com.example.shoplist.domain.GetShopItemFromIdUseCase
 import com.example.shoplist.domain.ShopItem
-import java.lang.Exception
 
 class ShopItemViewModel : ViewModel() {
     val repository = ShopListRepositoryImpl
@@ -96,7 +95,7 @@ class ShopItemViewModel : ViewModel() {
         _errorInputCount.value = false
     }
 
-    private fun finishWork(){
+    private fun finishWork() {
         _canCloseScreen.value = Unit
     }
 }
